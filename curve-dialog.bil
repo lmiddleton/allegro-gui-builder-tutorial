@@ -1,0 +1,65 @@
+;;; Define :curve-dialog
+ 
+(in-package :common-graphics-user)
+
+;; The finder-function, which returns the window if it already
+;; exists, and otherwise creates and returns it.
+;; Call this function if you need only one copy of this window,
+;; and that window is a non-owned top-level window.
+(defun curve-dialog () (find-or-make-application-window :curve-dialog 'make-curve-dialog))
+ 
+;; The maker-function, which always creates a new window.
+;; Call this function if you need more than one copy,
+;; or the single copy should have a parent or owner window.
+;; (Pass :owner to this function; :parent is for compatibility.)
+(defun make-curve-dialog
+    (&key parent (owner (or parent (screen *system*))) exterior
+     (interior (make-box 731 357 1142 575)) (name :curve-dialog) (title "Curves")
+     (border :frame) (child-p nil) form-p)
+  (let ((owner
+         (make-window name :owner owner
+           :class 'curve-dialog
+           :exterior exterior
+           :interior interior
+           :border border
+           :child-p child-p
+           :close-button t
+           :font (make-font-ex :swiss "Arial / ANSI" 12)
+           :form-state :normal
+           :maximize-button nil
+           :minimize-button nil
+           :name :curve-dialog
+           :pop-up t
+           :resizable nil
+           :scrollbars nil
+           :state :shrunk
+           :system-menu t
+           :title title
+           :title-bar t
+           :dialog-items (make-curve-dialog-widgets)
+           :form-p form-p
+           :form-package-name nil)))
+    owner))
+
+(defun make-curve-dialog-widgets ()
+  (list (make-instance 'single-item-list :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :height 168 :left 21 :name :curve-list :on-double-click
+                       'curve-dialog-curve-list-on-double-click :top 18 :width 214)
+        (make-instance 'default-button :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :left 297 :name :edit-button :on-change
+                       'curve-dialog-edit-button-on-change :title "~Edit..." :top 18)
+        (make-instance 'button :font (make-font-ex nil "Segoe UI / Default" 12) :left 297
+                       :name :add-button :on-change 'curve-dialog-add-button-on-change
+                       :title "~Add..." :top 65)
+        (make-instance 'button :font (make-font-ex nil "Segoe UI / Default" 12) :left 297
+                       :name :delete-button :on-change
+                       'curve-dialog-delete-button-on-change :title "De~lete" :top 113)
+        (make-instance 'button :font (make-font-ex nil "Segoe UI / Default" 12) :left 297
+                       :name :draw-all-button :on-change
+                       'curve-dialog-draw-all-button-on-change :title "~Draw All" :top
+                       160)
+        (make-instance 'group-box :contained-widgets
+                       (list :curve-list :edit-button :add-button :delete-button
+                             :draw-all-button)
+                       :font (make-font-ex nil "Segoe UI / Default" 12) :height 217 :name
+                       :group-box :width 410)))

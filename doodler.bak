@@ -1,0 +1,146 @@
+;;; Define :doodler
+ 
+(in-package :common-graphics-user)
+
+;; The finder-function, which returns the window if it already
+;; exists, and otherwise creates and returns it.
+;; Call this function if you need only one copy of this window,
+;; and that window is a non-owned top-level window.
+(defun doodler () (find-or-make-application-window :doodler 'make-doodler))
+ 
+;; The maker-function, which always creates a new window.
+;; Call this function if you need more than one copy,
+;; or the single copy should have a parent or owner window.
+;; (Pass :owner to this function; :parent is for compatibility.)
+(defun make-doodler
+    (&key parent (owner (or parent (screen *system*))) exterior
+     (interior (make-box 626 433 1858 915)) (name :doodler) (title "Doodler")
+     (border :frame) (child-p nil) form-p)
+  (let ((owner
+         (make-window name :owner owner
+           :class 'doodler
+           :exterior exterior
+           :interior interior
+           :border border
+           :child-p child-p
+           :close-button t
+           :font (make-font-ex :swiss "Arial / ANSI" 12)
+           :form-state :normal
+           :maximize-button t
+           :minimize-button t
+           :name :doodler
+           :pop-up nil
+           :resizable t
+           :scrollbars t
+           :state :normal
+           :system-menu t
+           :title title
+           :title-bar t
+           :toolbar t
+           :form-p form-p
+           :form-package-name nil)))
+    (let ((owner
+           (make-window :toolbar :owner owner
+             :class 'toolbar
+             :exterior (make-box 0 0 1232 28)
+             :border :static
+             :close-button nil
+             :dialog-items (list (make-instance 'multi-picture-button :font
+                                                (make-font-ex nil "Segoe UI / Default"
+                                                              12)
+                                                :left 2 :name :multi-picture-button-1
+                                                :on-change 'doodler-toolbar-click :range
+                                                (list (make-instance
+                                                       'button-info
+                                                       :name
+                                                       :erase
+                                                       :pixmap-name
+                                                       :erase
+                                                       :pixmap-source
+                                                       "P:\\2Is Data\\code_experiments\\allegro-experiments\\gui-builder-tutorial\\erase.bmp"
+                                                       :pixmap-icon
+                                                       nil
+                                                       :background-color
+                                                       nil
+                                                       :foreground-color
+                                                       nil
+                                                       :title
+                                                       nil
+                                                       :width
+                                                       nil
+                                                       :height
+                                                       nil
+                                                       :stretching
+                                                       t
+                                                       :tooltip
+                                                       "Erase"
+                                                       :help-string
+                                                       "Erase and redisplay image.")
+                                                      (make-instance
+                                                       'button-info
+                                                       :name
+                                                       :curve
+                                                       :pixmap-name
+                                                       :curve
+                                                       :pixmap-source
+                                                       "P:\\2Is Data\\code_experiments\\allegro-experiments\\gui-builder-tutorial\\curve.bmp"
+                                                       :pixmap-icon
+                                                       nil
+                                                       :background-color
+                                                       nil
+                                                       :foreground-color
+                                                       nil
+                                                       :title
+                                                       nil
+                                                       :width
+                                                       nil
+                                                       :height
+                                                       nil
+                                                       :stretching
+                                                       t
+                                                       :tooltip
+                                                       "Curve"
+                                                       :help-string
+                                                       "Create and modify curves.")
+                                                      (make-instance
+                                                       'button-info
+                                                       :name
+                                                       :scroll-to-center
+                                                       :pixmap-name
+                                                       :center
+                                                       :pixmap-source
+                                                       "P:\\2Is Data\\code_experiments\\allegro-experiments\\gui-builder-tutorial\\center.bmp"
+                                                       :pixmap-icon
+                                                       nil
+                                                       :background-color
+                                                       nil
+                                                       :foreground-color
+                                                       nil
+                                                       :title
+                                                       nil
+                                                       :width
+                                                       nil
+                                                       :height
+                                                       nil
+                                                       :stretching
+                                                       t
+                                                       :tooltip
+                                                       "Scroll to Center"
+                                                       :help-string
+                                                       "Scroll to center of page."))
+                                                :top 2 :width 950))
+             :font (make-font-ex :swiss "Arial / ANSI" 12)
+             :maximize-button nil
+             :minimize-button nil
+             :name :toolbar
+             :pop-up nil
+             :resizable nil
+             :scrollbars nil
+             :state :normal
+             :system-menu t
+             :title "Toolbar"
+             :title-bar nil)))
+      owner)
+    owner))
+
+(defun make-doodler-widgets () nil)

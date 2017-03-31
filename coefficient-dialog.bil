@@ -1,0 +1,89 @@
+;;; Define :coefficient-dialog
+ 
+(in-package :common-graphics-user)
+
+;; The finder-function, which returns the window if it already
+;; exists, and otherwise creates and returns it.
+;; Call this function if you need only one copy of this window,
+;; and that window is a non-owned top-level window.
+(defun coefficient-dialog ()
+  (find-or-make-application-window :coefficient-dialog 'make-coefficient-dialog))
+ 
+;; The maker-function, which always creates a new window.
+;; Call this function if you need more than one copy,
+;; or the single copy should have a parent or owner window.
+;; (Pass :owner to this function; :parent is for compatibility.)
+(defun make-coefficient-dialog
+    (&key parent (owner (or parent (screen *system*))) exterior
+     (interior (make-box 703 144 1114 313)) (name :coefficient-dialog)
+     (title "Coefficients") (border :frame) (child-p nil) form-p)
+  (let ((owner
+         (make-window name :owner owner
+           :class 'coefficient-dialog
+           :exterior exterior
+           :interior interior
+           :border border
+           :child-p child-p
+           :close-button t
+           :font (make-font-ex :swiss "Arial / ANSI" 12)
+           :form-state :normal
+           :maximize-button nil
+           :minimize-button nil
+           :name :coefficient-dialog
+           :pop-up nil
+           :resizable nil
+           :scrollbars nil
+           :state :normal
+           :system-menu t
+           :title title
+           :title-bar t
+           :dialog-items (make-coefficient-dialog-widgets)
+           :form-p form-p
+           :form-package-name nil)))
+    owner))
+
+(defun make-coefficient-dialog-widgets ()
+  (list (make-instance 'static-text :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :height 15 :left 28 :name :a-text :top 28 :value "~A:" :width 10)
+        (make-instance 'editable-text :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :left 44 :name :a-coefficient-text :top 25 :up-down-control
+                       :a-coefficient-control :value "1" :width 48)
+        (make-instance 'up-down-control :buddy-widget :a-coefficient-text :height 22
+                       :left 90 :name :a-coefficient-control :range (list 0 1000) :top 25
+                       :value 1)
+        (make-instance 'static-text :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :height 15 :left 136 :name :b-text :top 28 :value "~B:" :width 10)
+        (make-instance 'editable-text :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :left 152 :name :b-coefficient-text :top 25 :up-down-control
+                       :b-coefficient-control :value "1" :width 48)
+        (make-instance 'up-down-control :buddy-widget :b-coefficient-text :height 22
+                       :left 198 :name :b-coefficient-control :range (list 0 1000) :top
+                       25 :value 1)
+        (make-instance 'static-text :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :height 15 :left 244 :name :c-text :top 28 :value "~C:" :width 10)
+        (make-instance 'editable-text :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :left 260 :name :c-coefficient-text :top 25 :up-down-control
+                       :c-coefficient-control :value "1" :width 48)
+        (make-instance 'up-down-control :buddy-widget :c-coefficient-text :height 22
+                       :left 306 :name :c-coefficient-control :range (list 0 1000) :top
+                       25 :value 1)
+        (make-instance 'group-box :contained-widgets
+                       (list :a-text :a-coefficient-text :a-coefficient-control :b-text
+                             :b-coefficient-text :b-coefficient-control :c-text
+                             :c-coefficient-text :c-coefficient-control)
+                       :font (make-font-ex nil "Segoe UI / Default" 12) :height 69 :left
+                       7 :name :coefficient-box :top 3 :width 385)
+        (make-instance 'default-button :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :left 7 :name :ok-button :title "~OK" :top 130)
+        (make-instance 'cancel-button :font (make-font-ex nil "Segoe UI / Default" 12)
+                       :left 99 :name :cancel-button :title "~Cancel" :top 130)
+        (make-instance 'button :font (make-font-ex nil "Segoe UI / Default" 12) :left 192
+                       :name :test-button :on-change
+                       'coefficient-dialog-test-button-on-change :title "~Test" :top 130)
+        (make-instance 'multi-picture-button :font
+                       (make-font-ex nil "Segoe UI / Default" 12) :left 38 :name
+                       :color-list :top 93 :width 234)
+        (make-instance 'button :font (make-font-ex nil "Segoe UI / Default" 12) :left 288
+                       :name :color-button :on-change
+                       'coefficient-dialog-color-button-on-change :title "Other Color..."
+                       :top 89)))

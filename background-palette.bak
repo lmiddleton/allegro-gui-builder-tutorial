@@ -1,0 +1,53 @@
+;;; Define :background-palette
+ 
+(in-package :common-graphics-user)
+
+;; The finder-function, which returns the window if it already
+;; exists, and otherwise creates and returns it.
+;; Call this function if you need only one copy of this window,
+;; and that window is a non-owned top-level window.
+(defun background-palette ()
+  (find-or-make-application-window :background-palette 'make-background-palette))
+ 
+;; The maker-function, which always creates a new window.
+;; Call this function if you need more than one copy,
+;; or the single copy should have a parent or owner window.
+;; (Pass :owner to this function; :parent is for compatibility.)
+(defun make-background-palette
+    (&key parent (owner (or parent (screen *system*))) exterior
+     (interior (make-box 1649 522 1839 709)) (name :background-palette)
+     (title "Background") (border :palette) (child-p nil) form-p)
+  (let ((owner
+         (make-window name :owner owner
+           :class 'background-palette
+           :exterior exterior
+           :interior interior
+           :border border
+           :child-p child-p
+           :close-button nil
+           :font (make-font-ex :swiss "Arial / ANSI" 12)
+           :form-state :normal
+           :maximize-button nil
+           :minimize-button nil
+           :name :background-palette
+           :pop-up nil
+           :resizable nil
+           :scrollbars nil
+           :state :normal
+           :system-menu t
+           :title title
+           :title-bar t
+           :dialog-items (make-background-palette-widgets)
+           :form-p form-p
+           :form-package-name nil)))
+    owner))
+
+(defun make-background-palette-widgets ()
+  (list (make-instance 'multi-picture-button :font
+                       (make-font-ex nil "Segoe UI / Default" 12) :left 24 :name
+                       :color-list :on-change 'background-palette-color-list-on-change
+                       :top 27)
+        (make-instance 'button :font (make-font-ex nil "Segoe UI / Default" 12) :left 24
+                       :name :color-button :on-change
+                       'background-palette-color-button-on-change :title "Other Color..."
+                       :top 80)))
